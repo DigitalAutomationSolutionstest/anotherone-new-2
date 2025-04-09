@@ -1,29 +1,27 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
-interface CtaProps {
-  text: string
-  href: string
-}
-
 interface HeroProps {
   title: string
   subtitle: string
-  cta1?: CtaProps
-  cta2?: CtaProps
 }
 
-export function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
+export function Hero({ title, subtitle }: HeroProps) {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const form = e.currentTarget
-    const email = new FormData(form).get('email') as string
+    if (!email) {
+      toast.error('Inserisci un indirizzo email valido')
+      return
+    }
 
+    setLoading(true)
     try {
       const response = await fetch('/api/waitlist', {
         method: 'POST',
@@ -37,55 +35,41 @@ export function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
         throw new Error('Errore durante l\'iscrizione')
       }
 
-      toast.success('Grazie per esserti iscritto!')
-      form.reset()
+      toast.success('Grazie per esserti iscritto alla lista d\'attesa.')
+      setEmail('')
     } catch (error) {
       toast.error('Errore durante l\'iscrizione')
       console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background pt-14 pb-20 sm:pb-32">
-      <div className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-background shadow-xl shadow-primary/10 ring-1 ring-primary/5 sm:-mr-80 lg:-mr-96" />
-      <div className="mx-auto max-w-7xl px-6 py-32 sm:py-40 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6 xl:grid-cols-1 xl:grid-rows-1"
-        >
-          <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-6xl lg:col-span-2 xl:col-auto bg-gradient-to-r from-foreground to-muted-foreground text-transparent bg-clip-text">
+    <div className="relative isolate overflow-hidden bg-background">
+      <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
+        <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
+          <h1 className="mt-10 text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
             {title}
           </h1>
-          <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1">
-            <p className="text-lg leading-8 text-muted-foreground">{subtitle}</p>
-            <div className="mt-10 flex items-center gap-x-6">
-              {cta1 && (
-                <Button asChild size="lg">
-                  <Link href={cta1.href}>{cta1.text}</Link>
-                </Button>
-              )}
-              {cta2 && (
-                <Button asChild variant="outline" size="lg">
-                  <Link href={cta2.href}>{cta2.text}</Link>
-                </Button>
-              )}
-            </div>
-          </div>
-        </motion.div>
-        <div className="mt-10 flex max-w-md mx-auto gap-x-4">
-          <Input
-            type="email"
-            name="email"
-            placeholder="Inserisci la tua email"
-            required
-            className="min-w-0 flex-auto"
-          />
-          <Button type="submit">Iscriviti</Button>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            {subtitle}
+          </p>
+          <form onSubmit={handleSubmit} className="mt-10 flex max-w-md gap-x-4">
+            <Input
+              type="email"
+              placeholder="Inserisci la tua email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="min-w-0 flex-auto"
+            />
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Iscrizione...' : 'Iscriviti'}
+            </Button>
+          </form>
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-background sm:h-32" />
-    </section>
+    </div>
   )
 }

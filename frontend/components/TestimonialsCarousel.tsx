@@ -1,65 +1,67 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/ui/card'
+import { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 const testimonials = [
   {
-    name: 'Mario Rossi',
-    role: 'Startup Founder',
-    quote: 'Mini Ai App ha trasformato il nostro workflow. Le app sono potenti e facili da usare.',
+    content: "Mini AI Apps ha rivoluzionato il modo in cui gestiamo i nostri processi aziendali. L'automazione con l'AI ci ha fatto risparmiare ore di lavoro.",
+    author: "Marco Rossi",
+    role: "CEO, Tech Solutions",
   },
   {
-    name: 'Giulia Bianchi',
-    role: 'Marketing Manager',
-    quote: 'Il servizio personalizzato è stato incredibile. Hanno realizzato esattamente il sito che volevamo, in tempi record.',
+    content: "Il sito web che hanno creato per noi è moderno, veloce e perfettamente ottimizzato per il mobile. Ottimo lavoro!",
+    author: "Laura Bianchi",
+    role: "Marketing Manager, Innovazione Spa",
   },
   {
-    name: 'Luca Verdi',
-    role: 'Sviluppatore Freelance',
-    quote: 'Le API sono ben documentate e facili da integrare. Ottimo strumento per aggiungere AI ai miei progetti.',
+    content: "La loro competenza in ambito AI è impressionante. Hanno creato una soluzione personalizzata che si adatta perfettamente alle nostre esigenze.",
+    author: "Giuseppe Verdi",
+    role: "CTO, Digital Enterprise",
   },
 ]
 
 export default function TestimonialsCarousel() {
-  // TODO: Implementare un vero carousel con Framer Motion o altra libreria
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const next = () => {
+    setCurrentIndex((current) => (current + 1) % testimonials.length)
+  }
+
+  const previous = () => {
+    setCurrentIndex((current) => (current - 1 + testimonials.length) % testimonials.length)
+  }
+
   return (
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="mx-auto max-w-2xl text-center"
-        >
+        <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Cosa dicono di noi
+            Cosa dicono i nostri clienti
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            Le parole dei nostri utenti e clienti soddisfatti.
+            Scopri le esperienze di chi ha scelto Mini AI Apps per le proprie soluzioni digitali.
           </p>
-        </motion.div>
-        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card>
-                <CardContent className="pt-6">
-                  <blockquote className="italic text-muted-foreground">
-                    " {testimonial.quote} "
-                  </blockquote>
-                  <div className="mt-4 font-semibold">{testimonial.name}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+        </div>
+        <div className="mx-auto mt-16 max-w-2xl">
+          <Card className="p-8">
+            <blockquote className="text-lg font-semibold leading-8">
+              "{testimonials[currentIndex].content}"
+            </blockquote>
+            <div className="mt-6">
+              <p className="text-base font-semibold">{testimonials[currentIndex].author}</p>
+              <p className="text-sm text-muted-foreground">{testimonials[currentIndex].role}</p>
+            </div>
+          </Card>
+          <div className="mt-6 flex justify-center gap-4">
+            <Button variant="outline" onClick={previous}>
+              Precedente
+            </Button>
+            <Button onClick={next}>
+              Successivo
+            </Button>
+          </div>
         </div>
       </div>
     </section>

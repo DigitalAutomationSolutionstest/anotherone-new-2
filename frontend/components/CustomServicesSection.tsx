@@ -1,38 +1,51 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
+const services = [
+  {
+    title: 'Mini App AI',
+    description: 'Applicazioni AI personalizzate per automatizzare i tuoi processi aziendali.',
+    href: '/services#mini-app',
+  },
+  {
+    title: 'Siti Web',
+    description: 'Siti web moderni e responsive per la tua presenza online.',
+    href: '/services#web',
+  },
+  {
+    title: 'Progetti Custom',
+    description: 'Soluzioni su misura per le tue esigenze specifiche.',
+    href: '/services#custom',
+  },
+]
+
 export default function CustomServicesSection() {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      viewport={{ once: true, amount: 0.3 }}
-      className="py-20 text-center bg-gradient-to-r from-primary/5 to-secondary/5"
-    >
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-4 leading-tight sm:text-5xl bg-gradient-to-r from-foreground to-muted-foreground text-transparent bg-clip-text">
-          Hai un'idea? La costruiamo per te
-        </h2>
-        <p className="max-w-3xl mx-auto mb-6 text-muted-foreground text-lg sm:text-xl">
-          Non hai tempo o conoscenze per sviluppare un sito o un'app AI? Ci pensiamo noi.
-          Progetti su misura, realizzati con intelligenza artificiale all'avanguardia e attenzione maniacale al design e alla performance.
-        </p>
-        <p className="max-w-2xl mx-auto mb-10 text-lg font-medium text-primary">
-          Il nostro team usa modelli AI di ultima generazione (OpenAI, Hugging Face, Whisper) integrati in soluzioni semplici, potenti e accessibili.
-        </p>
-        <div className="flex justify-center gap-4 flex-col sm:flex-row">
-          <Button asChild size="lg">
-            <Link href="/services">Richiedi un progetto</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/#features">Scopri le mini-app</Link>
-          </Button>
+    <section className="py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Servizi Personalizzati
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            Scegli il servizio più adatto alle tue esigenze o contattaci per una soluzione su misura.
+          </p>
+        </div>
+        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          {services.map((service) => (
+            <Card key={service.title} className="p-6">
+              <h3 className="text-xl font-semibold">{service.title}</h3>
+              <p className="mt-2 text-muted-foreground">{service.description}</p>
+              <Button asChild className="mt-4">
+                <Link href={service.href}>Scopri di più</Link>
+              </Button>
+            </Card>
+          ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   )
 } 
